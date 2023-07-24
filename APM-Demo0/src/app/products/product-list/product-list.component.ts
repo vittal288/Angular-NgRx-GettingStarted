@@ -5,6 +5,8 @@ import { Subscription } from 'rxjs';
 import { Product } from '../product';
 import { ProductService } from '../product.service';
 import { Store } from '@ngrx/store';
+import { State, getShowProductCode } from '../state/product.reducer';
+
 
 @Component({
   selector: 'pm-product-list',
@@ -23,7 +25,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   selectedProduct: Product | null;
   sub: Subscription;
 
-  constructor(private productService: ProductService, private store: Store<any>) { }
+  constructor(private productService: ProductService, private store: Store<State>) { }
 
   ngOnInit(): void {
     this.sub = this.productService.selectedProductChanges$.subscribe(
@@ -40,11 +42,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
     // subscribing the store can be done it always ngOnInit life-cycle hook
     // read the store
     // select method will return an observable of state slice 
-    this.store.select('products').subscribe(
-      products=>{
-          console.log('Product slide' , products);
-          this.displayCode = products.showProductCode;
-      }
+    this.store.select(getShowProductCode).subscribe(
+      getShowProductCode => this.displayCode = getShowProductCode
     )
   }
 
