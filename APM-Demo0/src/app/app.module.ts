@@ -19,6 +19,7 @@ import { PageNotFoundComponent } from './home/page-not-found.component';
 import { UserModule } from './user/user.module';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
+import { EffectsModule } from '@ngrx/effects';
 
 @NgModule({
   imports: [
@@ -28,11 +29,14 @@ import { environment } from '../environments/environment';
     UserModule,
     AppRoutingModule,
     StoreModule.forRoot({}, {}),
+    // configure the store module 
     StoreDevtoolsModule.instrument({ 
         name: 'APM Demo App Devtools',
         maxAge: 25, 
         logOnly: environment.production 
-      })
+      }),
+    // configure Effects module for root level 
+    EffectsModule.forRoot([])
   ],
   declarations: [
     AppComponent,

@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-
-
+import { Store } from '@ngrx/store';
+import { State, getCurrentProduct, getProducts, getShowProductCode, getError } from '../state/product.reducer';
+import { Observable } from 'rxjs';
 
 import { Product } from '../product';
-import { ProductService } from '../product.service';
-import { Store } from '@ngrx/store';
-import { State, getCurrentProduct, getShowProductCode } from '../state/product.reducer';
 import * as ProductActions  from '../state/product.actions';
+
 
 
 @Component({
@@ -16,43 +15,39 @@ import * as ProductActions  from '../state/product.actions';
 })
 export class ProductListComponent implements OnInit {
   pageTitle = 'Products';
-  errorMessage: string;
-
-  displayCode: boolean;
-
-  products: Product[];
-
-  // Used to highlight the selected product in the list
-  selectedProduct: Product | null;
+  products$: Observable<Product[]>;
+  selectedProduct$: Observable<Product>;
+  displayCode$: Observable<boolean>;
+  errorMessage$: Observable<string>;
+  
 
 
-  constructor(private productService: ProductService, private store: Store<State>) { }
+  constructor(private store: Store<State>) { }
 
   ngOnInit(): void {
-    // this.sub = this.productService.selectedProductChanges$.subscribe(
-    //   currentProduct => this.selectedProduct = currentProduct
-    // );
 
-    // TODO: Unsubscribe 
-    this.store.select(getCurrentProduct).subscribe(
-      currentProduct => this.selectedProduct = currentProduct
-    )
+    this.products$ = this.store.select(getProducts);
 
+    this.errorMessage$ = this.store.select(getError);
+    
+    // dispatch an action called (loadProducts) to load the products via NgRx effects(ProductEffects) through service
+    // how the flow works with following actions 
+    // step 1: dispatching an action called loadProducts()
+    // step 2: Once product module is lazily loaded then register the loadEffects 
+    // step 3: at loadEffects(product.effects.ts) filter the "ProductActions.loadProducts()" action using ofType operator 
+    // step 4: Invoke the service to get list of products
+    // step 5: once service response is success then dispatch another action called "ProductActions.loadProductsSuccess" with products
+    // step 6: at ProductActions.loadProductsSuccess action, update the store with latest products 
+    this.store.dispatch(ProductActions.loadProducts());
+    
+    this.selectedProduct$ =  this.store.select(getCurrentProduct);
+    
+    
 
-
-    this.productService.getProducts().subscribe({
-      next: (products: Product[]) => this.products = products,
-      error: err => this.errorMessage = err
-    });
-
-
-    // TODO: Unsubscribe
     // subscribing the store can be done it always ngOnInit life-cycle hook
     // read the store
     // select method will return an observable of state slice 
-    this.store.select(getShowProductCode).subscribe(
-      getShowProductCode => this.displayCode = getShowProductCode
-    )
+    this.displayCode$ = this.store.select(getShowProductCode);
   }
 
 
