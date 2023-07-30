@@ -41,9 +41,9 @@ export class ProductListComponent implements OnInit {
     this.store.dispatch(ProductActions.loadProducts());
     
     this.selectedProduct$ =  this.store.select(getCurrentProduct);
-    
-    
 
+
+    
     // subscribing the store can be done it always ngOnInit life-cycle hook
     // read the store
     // select method will return an observable of state slice 
@@ -66,7 +66,7 @@ export class ProductListComponent implements OnInit {
 
   productSelected(product: Product): void {
     this.store.dispatch(
-      ProductActions.setCurrentProduct({product}))
+      ProductActions.setCurrentProduct({currentProductId : product.id}))
   }
 
 }
