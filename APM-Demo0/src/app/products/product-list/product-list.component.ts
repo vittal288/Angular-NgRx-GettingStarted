@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { State, getCurrentProduct, getProducts, getShowProductCode, getError } from '../state/product.reducer';
+import { State, getCurrentProduct, getProducts, getShowProductCode, getError } from '../state';
 import { Observable } from 'rxjs';
 
 import { Product } from '../product';
-import * as ProductActions  from '../state/product.actions';
+import {ProductPageActions}  from '../state/actions';
 
 
 
@@ -38,7 +38,7 @@ export class ProductListComponent implements OnInit {
     // step 4: Invoke the service to get list of products
     // step 5: once service response is success then dispatch another action called "ProductActions.loadProductsSuccess" with products
     // step 6: at ProductActions.loadProductsSuccess action, update the store with latest products 
-    this.store.dispatch(ProductActions.loadProducts());
+    this.store.dispatch(ProductPageActions.loadProducts());
     
     this.selectedProduct$ =  this.store.select(getCurrentProduct);
 
@@ -53,20 +53,20 @@ export class ProductListComponent implements OnInit {
 
   checkChanged(): void {
     this.store.dispatch(
-      ProductActions.toggleProductCode()
+      ProductPageActions.toggleProductCode()
     )
   }
 
   newProduct(): void {
     // this.productService.changeSelectedProduct(this.productService.newProduct());
     this.store.dispatch(
-      ProductActions.initializeCurrentProduct()
+      ProductPageActions.initializeCurrentProduct()
     )
   }
 
   productSelected(product: Product): void {
     this.store.dispatch(
-      ProductActions.setCurrentProduct({currentProductId : product.id}))
+      ProductPageActions.setCurrentProduct({currentProductId : product.id}))
   }
 
 }
