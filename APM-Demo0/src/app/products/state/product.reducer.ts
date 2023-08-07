@@ -2,6 +2,7 @@ import { createReducer, on } from "@ngrx/store";
 import {ProductAPIActions, ProductPageActions} from "./actions";
 import { Product } from "../product";
 
+
 // define interfaces 
 export interface ProductState {
     showProductCode: boolean;
@@ -86,5 +87,23 @@ export const productReducer = createReducer<ProductState>(
             ...state,
             error:action.error
         };
+    }),
+
+    // delete product 
+    on(ProductAPIActions.deleteProductSuccess, (state, action) :ProductState=>{
+        const remainingProducts = state.products.filter(item => action.id !== item.id)
+
+        return {
+            ...state,
+            products: remainingProducts,
+            error:''
+        }
+    }),
+
+    on(ProductAPIActions.deleteProductFailure ,(state , action):ProductState=>{
+        return{
+            ...state,
+            error:action.error
+        }
     })
 )

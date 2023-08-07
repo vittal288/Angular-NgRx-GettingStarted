@@ -7,6 +7,7 @@ import { of } from "rxjs";
 
 
 
+
 @Injectable()
 export class ProductEffects {
 
@@ -16,11 +17,6 @@ export class ProductEffects {
 
     // load product effects
     loadProducts$ = createEffect(() => {
-        // this.actions$.subscribe(allActions=>{
-        //     console.log('AllActions--->', allActions);
-        // });
-
-
         return this.actions$.pipe(
             // to filter the required action and continue the remaining steps
             ofType(ProductPageActions.loadProducts),
@@ -51,6 +47,23 @@ export class ProductEffects {
                             of(ProductAPIActions.loadProductsFailure({ error }))
                         )
                     ))
+        )
+    })
+
+    // delete product
+    deleteProduct$ = createEffect(()=>{
+        return this.actions$.pipe(
+            ofType(ProductPageActions.deleteProduct),
+            mergeMap(action =>
+                this.productService.deleteProduct(action.id).
+                pipe(
+                    map(product => ProductAPIActions.deleteProductSuccess({id: action.id})),
+                    catchError(error=>
+                            of(ProductAPIActions.deleteProductFailure({error}))
+                    )
+                )
+            )
+
         )
     })
 }

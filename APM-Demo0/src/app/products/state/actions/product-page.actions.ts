@@ -28,3 +28,8 @@ export const updateProduct = createAction(
     props<{product:Product}>()
 )
 
+export const deleteProduct = createAction(
+    '[Product Page] Delete',
+    props<{ id: number }>()
+)
+
