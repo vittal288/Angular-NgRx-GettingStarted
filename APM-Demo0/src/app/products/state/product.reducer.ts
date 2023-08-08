@@ -92,7 +92,6 @@ export const productReducer = createReducer<ProductState>(
     // delete product 
     on(ProductAPIActions.deleteProductSuccess, (state, action) :ProductState=>{
         const remainingProducts = state.products.filter(item => action.id !== item.id)
-
         return {
             ...state,
             products: remainingProducts,
@@ -105,5 +104,21 @@ export const productReducer = createReducer<ProductState>(
             ...state,
             error:action.error
         }
-    })
+    }),
+
+    // create product
+    on(ProductAPIActions.createProductSuccess, (state, action): ProductState=>{
+        return{
+            ...state,
+            products:[...state.products,  action.product],
+            error:''
+        }
+    }),
+    
+    on(ProductAPIActions.createProductFailure ,(state , action):ProductState=>{
+        return{
+            ...state,
+            error:action.error
+        }
+    }),
 )

@@ -32,3 +32,15 @@ export const deleteProductFailure = createAction(
     '[Product API] Delete Failure',
     props<{ error: string }>()
 )
+
+// Create 
+
+export const createProductSuccess = createAction(
+    '[Product API] Create Success',
+    props<{product:Product}>()
+)
+
+export const createProductFailure = createAction(
+    '[Product API] Create Failure',
+    props<{ error: string }>()
+)

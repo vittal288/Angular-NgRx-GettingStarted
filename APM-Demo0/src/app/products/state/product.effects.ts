@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { ProductService } from "../product.service";
-import {ProductAPIActions, ProductPageActions } from './actions';
+import { ProductAPIActions, ProductPageActions } from './actions';
 import { catchError, concatMap, map, mergeMap } from "rxjs/operators";
 import { of } from "rxjs";
 
@@ -51,19 +51,34 @@ export class ProductEffects {
     })
 
     // delete product
-    deleteProduct$ = createEffect(()=>{
+    deleteProduct$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(ProductPageActions.deleteProduct),
             mergeMap(action =>
                 this.productService.deleteProduct(action.id).
-                pipe(
-                    map(product => ProductAPIActions.deleteProductSuccess({id: action.id})),
-                    catchError(error=>
-                            of(ProductAPIActions.deleteProductFailure({error}))
+                    pipe(
+                        map(product => ProductAPIActions.deleteProductSuccess({ id: action.id })),
+                        catchError(error =>
+                            of(ProductAPIActions.deleteProductFailure({ error }))
+                        )
                     )
-                )
             )
 
+        )
+    })
+
+
+    // create product 
+    createProduct$ = createEffect(() => {
+        return this.actions$.pipe(
+            ofType(ProductPageActions.createProduct),
+            concatMap(action =>
+                this.productService.createProduct(action.product).
+                    pipe(
+                        map(product => ProductAPIActions.createProductSuccess({ product }),
+                        catchError(error =>of(ProductAPIActions.createProductFailure({ error }))))
+                    )
+            )
         )
     })
 }
